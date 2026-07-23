@@ -97,6 +97,19 @@ def play_tic_tac_toe():
         print("---|---|---")
         print(f" {board[6]} | {board[7]} | {board[8]} \n")
 
+  # pip install speedtest-cli
+import speedtest
+
+def check_speed():
+    print("\n--- [ 7. Speedtest ] ---")
+    print("Testing internet speed, please wait...")
+    st = speedtest.Speedtest()
+    st.get_best_server()
+    download = round(st.download() / (1024 * 1024), 2)
+    upload = round(st.upload() / (1024 * 1024), 2)
+    print(f"Download Speed: {download} Mbps")
+    print(f"Upload Speed  : {upload} Mbps\n")
+  
     def check_winner(player):
         win_conditions = [
             (0, 1, 2), (3, 4, 5), (6, 7, 8), # Rows
@@ -137,6 +150,7 @@ def show_menu():
         print("[4] System Info (CPU & RAM)")
         print("[5] Custom ASCII Banner Generator")
         print("[6] Play Tic-Tac-Toe Game")
+        print("[7] Speedtest")
         print("[0] Exit")
         
         choice = input("\nEnter choice (0-6): ").strip()
@@ -153,6 +167,8 @@ def show_menu():
             ascii_banner_gen()
         elif choice == '6':
             play_tic_tac_toe()
+        elif choice == '7':
+            check_speed()
         elif choice == '0':
             print("\nThank you for using Labib CLI Toolkit! Exiting...\n")
             sys.exit()
