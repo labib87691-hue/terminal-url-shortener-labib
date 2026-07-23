@@ -1,4 +1,3 @@
-এখানে একদম ইমোজি ছাড়া পুরো Plain Text README দেওয়া হলো, যা সম্পূর্ণ প্রফেশনাল ও ক্লিন:
 
 Labib All-In-One CLI Toolkit
 A versatile, feature-rich command-line interface (CLI) toolkit written in Python. Designed for developers, system administrators, and tech enthusiasts to perform everyday utility tasks directly from the terminal.
