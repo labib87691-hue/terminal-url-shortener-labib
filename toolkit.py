@@ -3,6 +3,7 @@ import os
 import requests
 import psutil
 import pyfiglet
+import qrcode
 
 BANNER = r"""
   _        _    ____ ___ ____   _____ _____ ____  _    _   
@@ -97,24 +98,11 @@ def play_tic_tac_toe():
         print("---|---|---")
         print(f" {board[6]} | {board[7]} | {board[8]} \n")
 
-  # pip install speedtest-cli
-import speedtest
-
-def check_speed():
-    print("\n--- [ 7. Speedtest ] ---")
-    print("Testing internet speed, please wait...")
-    st = speedtest.Speedtest()
-    st.get_best_server()
-    download = round(st.download() / (1024 * 1024), 2)
-    upload = round(st.upload() / (1024 * 1024), 2)
-    print(f"Download Speed: {download} Mbps")
-    print(f"Upload Speed  : {upload} Mbps\n")
-  
     def check_winner(player):
         win_conditions = [
-            (0, 1, 2), (3, 4, 5), (6, 7, 8), # Rows
-            (0, 3, 6), (1, 4, 7), (2, 5, 8), # Columns
-            (0, 4, 8), (2, 4, 6)             # Diagonals
+            (0, 1, 2), (3, 4, 5), (6, 7, 8),
+            (0, 3, 6), (1, 4, 7), (2, 5, 8),
+            (0, 4, 8), (2, 4, 6)
         ]
         return any(board[a] == board[b] == board[c] == player for a, b, c in win_conditions)
 
@@ -139,6 +127,65 @@ def check_speed():
     print_board()
     print("It's a draw!\n")
 
+# Option 7: Terminal QR Code Generator
+def generate_qr():
+    print("\n--- [ 7. QR Code Generator ] ---")
+    data = input("Enter Text or URL for QR Code: ").strip()
+    if not data:
+        print("Input cannot be empty!\n")
+        return
+    qr = qrcode.QRCode()
+    qr.add_data(data)
+    qr.make()
+    print("\nHere is your QR Code:\n")
+    qr.print_tty()
+    print()
+
+# Option 8: GitHub User Analyzer
+def github_analyzer():
+    print("\n--- [ 8. GitHub User Analyzer ] ---")
+    username = input("Enter GitHub Username: ").strip()
+    if not username:
+        print("Username cannot be empty!\n")
+        return
+    try:
+        res = requests.get(f"https://api.github.com/users/{username}")
+        if res.status_code == 200:
+            data = res.json()
+            print(f"\nName          : {data.get('name', 'N/A')}")
+            print(f"Bio           : {data.get('bio', 'N/A')}")
+            print(f"Public Repos  : {data.get('public_repos')}")
+            print(f"Followers     : {data.get('followers')}")
+            print(f"Following     : {data.get('following')}")
+            print(f"Location      : {data.get('location', 'N/A')}")
+            print(f"Profile URL   : {data.get('html_url')}\n")
+        else:
+            print("Error: GitHub user not found!\n")
+    except Exception as e:
+        print(f"Error: {e}\n")
+
+# Option 9: Disk Usage Visualizer
+def disk_usage_visualizer():
+    print("\n--- [ 9. Disk Usage Visualizer ] ---")
+    partitions = psutil.disk_partitions()
+    for partition in partitions:
+        try:
+            usage = psutil.disk_usage(partition.mountpoint)
+            percent = usage.percent
+            bar_length = 20
+            filled_length = int(bar_length * percent // 100)
+            bar = '█' * filled_length + '-' * (bar_length - filled_length)
+            
+            total_gb = round(usage.total / (1024**3), 2)
+            used_gb = round(usage.used / (1024**3), 2)
+            free_gb = round(usage.free / (1024**3), 2)
+            
+            print(f"Drive ({partition.device}):")
+            print(f"[{bar}] {percent}%")
+            print(f"Used: {used_gb} GB / Total: {total_gb} GB (Free: {free_gb} GB)\n")
+        except PermissionError:
+            continue
+
 # Main Menu
 def show_menu():
     print(BANNER)
@@ -150,10 +197,12 @@ def show_menu():
         print("[4] System Info (CPU & RAM)")
         print("[5] Custom ASCII Banner Generator")
         print("[6] Play Tic-Tac-Toe Game")
-        print("[7] Speedtest")
+        print("[7] Generate QR Code in Terminal")
+        print("[8] GitHub User Analyzer")
+        print("[9] Disk Usage Visualizer")
         print("[0] Exit")
         
-        choice = input("\nEnter choice (0-6): ").strip()
+        choice = input("\nEnter choice (0-9): ").strip()
         
         if choice == '1':
             shorten_url()
@@ -168,12 +217,16 @@ def show_menu():
         elif choice == '6':
             play_tic_tac_toe()
         elif choice == '7':
-            check_speed()
+            generate_qr()
+        elif choice == '8':
+            github_analyzer()
+        elif choice == '9':
+            disk_usage_visualizer()
         elif choice == '0':
             print("\nThank you for using Labib CLI Toolkit! Exiting...\n")
             sys.exit()
         else:
-            print("\nInvalid input! Please enter a number between 0 and 6.\n")
+            print("\nInvalid input! Please enter a number between 0 and 9.\n")
 
 if __name__ == "__main__":
     show_menu()
