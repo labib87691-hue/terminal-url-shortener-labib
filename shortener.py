@@ -13,24 +13,25 @@ BANNER = r"""
 ===========================================================
 """
 
-def shorten_url_cleanuri(long_url):
-    api_url = "https://cleanuri.com/api/v1/shorten"
+def shorten_url(long_url):
+    api_url = f"http://tinyurl.com/api-create.php?url={long_url}"
     try:
-        response = requests.post(api_url, data={'url': long_url})
+        response = requests.get(api_url)
         if response.status_code == 200:
-            return response.json().get("result_url")
+            return response.text
         else:
             return "Error: Link shorten করা সম্ভব হয়নি।"
     except Exception as e:
         return f"Error: {e}"
 
 if __name__ == "__main__":
+    # ডিজাইন প্রপ্রিন্ট করা
     print(BANNER)
     
     if len(sys.argv) > 1:
         target_url = sys.argv[1]
         print(f"Original URL  : {target_url}")
-        print(f"Shortened URL : {shorten_url_cleanuri(target_url)}\n")
+        print(f"Shortened URL : {shorten_url(target_url)}\n")
     else:
         print("Usage: python shortener.py <YOUR_URL>")
         print("Example: python shortener.py https://example.com\n")
